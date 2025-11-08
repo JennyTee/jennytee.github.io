@@ -144,17 +144,29 @@
                 0 0 100px rgba(0, 240, 255, 0.2);
         }
 
-        /* Glowing accent box */
-        .accent-box {
+        /* Animated gradient blob */
+        .accent-blob {
             position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 2px solid var(--neon-cyan);
-            border-radius: 10px;
-            top: -30px;
-            right: -30px;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            right: -50px;
+            background: radial-gradient(circle, rgba(255, 0, 128, 0.3) 0%, rgba(0, 240, 255, 0.2) 50%, transparent 70%);
+            border-radius: 50%;
             z-index: -1;
+            filter: blur(40px);
+            animation: blobPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes blobPulse {
+            0%, 100% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.2) translate(20px, -20px);
+                opacity: 0.8;
+            }
         }
 
         /* Container */
@@ -439,7 +451,7 @@
                 height: 500px;
             }
 
-            .accent-box {
+            .accent-blob {
                 display: none;
             }
 
@@ -510,13 +522,13 @@
                 <h1 class="fade-in">Jenny Terlinden</h1>
                 <p class="tagline fade-in delay-1">Fitness Instructor + Software Engineer</p>
                 <p class="description fade-in delay-2">
-                    17+ years of teaching high-energy classes. Software developer by trade. 
+                    <span id="years-experience"></span> years of teaching high-energy classes. Software developer by trade. 
                     Engineering better workouts, one rep at a time.
                 </p>
             </div>
             <div class="hero-image-container fade-in delay-2">
                 <img src="headshot1.jpg" alt="Jenny Terlinden" class="hero-image">
-                <div class="accent-box"></div>
+                <div class="accent-blob"></div>
             </div>
         </div>
     </section>
@@ -526,20 +538,10 @@
         <div class="info-card fade-in">
             <h3>The Approach</h3>
             <p>
-                I'm a certified group fitness instructor with over 17 years of experience leading inclusive, 
-                results-driven classes in Chicago. With a background in dance and outdoor cycling—plus a personal 
-                passion for strength training and competing in endurance events like Hyrox—I bring energy, creativity, 
-                and a whole-body approach to every class.
+                I've been moving my whole life. Dance got me hooked as a kid, and it's what eventually led me to group fitness instruction. After training through UW-Madison's year-long Rec Sports program, I've spent <span id="years-experience-2"></span> years teaching in Chicago—expanding from that foundation into cycling, strength training, kickboxing, yoga, and competing in endurance events like Hyrox.
             </p>
             <p>
-                What makes my approach unique? As a software engineer, I bring the same analytical mindset to designing effective 
-                workout programs. No fluff, no wasted time. Whether debugging code or programming a workout, I'm all about finding 
-                efficient solutions that deliver results.
-            </p>
-            <p>
-                My foundation in fitness instruction began with a comprehensive year-long training program through the 
-                University of Wisconsin-Madison's Rec Sports department—an experience that shaped my 
-                teaching philosophy and technical skills from the ground up.
+                As a software engineer, I bring the same mindset to fitness that I bring to code: analytical, efficient, results-driven. No wasted time, just programming that works.
             </p>
         </div>
     </section>
@@ -594,7 +596,7 @@
                 <div class="cert-org">Yogaview Chicago</div>
             </div>
             <div class="cert-item fade-in delay-2">
-                <div class="cert-name">Pregnancy & Postpartum Corrective Exercise Specialist</div>
+                <div class="cert-name">Pregnancy & Postpartum Specialist</div>
                 <div class="cert-org">Core Exercise Solutions</div>
             </div>
             <div class="cert-item fade-in delay-2">
@@ -712,6 +714,17 @@
     </footer>
 
     <script>
+        // Calculate years of experience (started teaching in 2008)
+        const startYear = 2008;
+        const currentYear = new Date().getFullYear();
+        const yearsExperience = currentYear - startYear;
+        
+        // Update all instances
+        const experienceElements = document.querySelectorAll('#years-experience, #years-experience-2');
+        experienceElements.forEach(el => {
+            el.textContent = yearsExperience + '+';
+        });
+
         // Intersection Observer for scroll animations
         const observerOptions = {
             threshold: 0.1,
