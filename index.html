@@ -526,10 +526,17 @@
         <div class="info-card fade-in">
             <h3>The Approach</h3>
             <p>
-                I've been moving my whole life! Dance got me hooked as a kid/young adult, and it's what eventually led me to group fitness instruction. After training through UW-Madison's year-long Rec Sports program, I've spent <span id="years-experience-2"></span> years teaching fitness classes—including indoor cycling, strength training, kickboxing, yoga, and competing in endurance events like Hyrox.
+                Group fitness is my happy place. I was taking every class I could long before I started teaching, and I still take multiple classes a week because I genuinely love the energy and community. As a software engineer, I bring analytical thinking to my programming—efficient, purposeful, designed to work. But I never lose sight of what makes group fitness special. My classes are hard work, but they're also fun and leave you feeling like you crushed it.
             </p>
+        </div>
+    </section>
+
+    <!-- How I Got Here Section -->
+    <section class="container">
+        <div class="info-card fade-in">
+            <h3>How I Got Here</h3>
             <p>
-                As a software engineer, I bring the same mindset to fitness that I bring to code: analytical, efficient, results-driven. No wasted time, just programming that works.
+                I've been moving my whole life! Dance got me hooked on movement as a kid, and it's what eventually led me to group fitness instruction. In 2005 I began a rigorous year-long Fitness Instructor training program through the University of Wisconsin's Rec Sports department—an experience that shaped my teaching philosophy and technical skills from the ground up. Since then, I've taught in various locations (including Spain!), eventually expanding into indoor cycling, strength training, kickboxing, yoga, and more. I took a few years off along the way to pursue things like working as a trekking guide for Quetzaltrekkers Guatemala, where I led multi-day hikes up volcanoes and through rural villages—an experience that deepened my appreciation for endurance, adventure, and pushing limits.
             </p>
         </div>
     </section>
@@ -615,14 +622,7 @@
         <div class="info-card fade-in">
             <h3>Beyond The Gym</h3>
             <p>
-                When I'm not teaching classes, I work as a software engineer. I have a Master's Degree in 
-                Computer Science and love building elegant solutions to complex problems.
-            </p>
-            <p>
-                Outside of work and the studio, you'll find me cycling outside, performing with my salsa dance team, rock climbing, 
-                or hiking (especially if I'm lucky enough to be near a mountain). Before moving to Chicago, I spent time as a trekking guide for Quetzaltrekkers
-                Guatemala, leading multi-day hikes up volcanoes and through rural villages—an experience that deepened my appreciation for endurance, 
-                adventure, and pushing limits.
+                When I'm not teaching classes, you'll find me working as a software engineer (I have a Master's Degree in Computer Science), cycling outside, performing with my salsa dance team, rock climbing, or hiking up a mountain. I've been known to participate in a Hyrox race or two, as well!
             </p>
         </div>
     </section>
@@ -708,7 +708,7 @@
         const yearsExperience = currentYear - startYear;
         
         // Update all instances
-        const experienceElements = document.querySelectorAll('#years-experience, #years-experience-2');
+        const experienceElements = document.querySelectorAll('#years-experience');
         experienceElements.forEach(el => {
             el.textContent = yearsExperience + '+';
         });
