@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Blog | Jenny Terlinden</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Keep these values in sync with index.html and each post. */
+        :root {
+            --bg: #131211;
+            --surface: #1a1918;
+            --border: #2c2a27;
+            --border-strong: #3a3733;
+            --text: #e7e4df;
+            --heading: #f3f1ed;
+            --muted: #9b958c;
+            --accent: #c47f83;
+            --accent-dim: #a86a6e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrap {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 6rem 1.5rem 4rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 2.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover { color: var(--accent); }
+
+        .page-title {
+            font-size: clamp(1.9rem, 5vw, 2.6rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 2.5rem;
+            color: var(--heading);
+        }
+
+        .post-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.6rem 1.7rem 1.7rem;
+            margin-bottom: 1.25rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .post-card:hover {
+            border-color: var(--border-strong);
+        }
+
+        .post-card:hover .read-more {
+            color: var(--accent-dim);
+        }
+
+        .post-card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.4rem;
+            color: var(--heading);
+        }
+
+        .post-card .date {
+            display: block;
+            color: var(--muted);
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.9rem;
+        }
+
+        .post-card .excerpt {
+            color: var(--text);
+        }
+
+        .post-card .read-more {
+            display: block;
+            margin-top: 1rem;
+            color: var(--accent);
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .empty {
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a class="back-link" href="https://www.jennyterlinden.com/">&larr; jennyterlinden.com</a>
+        <h1 class="page-title">Blog</h1>
+
+        <div id="posts">
+            <p class="empty">Loading posts&hellip;</p>
+        </div>
+    </div>
+
+    <script>
+        // Add a post's folder name here after you create it. Order does not matter;
+        // the list is sorted by each post's date automatically (most recent first).
+        const POSTS = [
+            '2026-mishigami-race-recap',
+        ];
+
+        function excerpt(text, max = 220) {
+            const clean = text.replace(/\s+/g, ' ').trim();
+            if (clean.length <= max) return clean;
+            const sliced = clean.slice(0, max);
+            const lastSpace = sliced.lastIndexOf(' ');
+            return (lastSpace > 0 ? sliced.slice(0, lastSpace) : sliced) + '…';
+        }
+
+        async function loadPost(slug) {
+            const res = await fetch(slug + '/', { cache: 'no-cache' });
+            if (!res.ok) throw new Error('Failed to load ' + slug);
+            const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+
+            const titleEl = doc.querySelector('.post-title');
+            const dateEl = doc.querySelector('.post-date');
+            const bodyEl = doc.querySelector('.post-body');
+
+            return {
+                slug,
+                title: titleEl ? titleEl.textContent.trim() : slug,
+                dateText: dateEl ? dateEl.textContent.trim() : '',
+                dateKey: dateEl ? (dateEl.getAttribute('datetime') || '') : '',
+                excerpt: bodyEl ? excerpt(bodyEl.textContent) : ''
+            };
+        }
+
+        function render(posts) {
+            const container = document.getElementById('posts');
+            if (!posts.length) {
+                container.innerHTML = '<p class="empty">No posts yet.</p>';
+                return;
+            }
+            container.innerHTML = posts.map(function (p) {
+                return (
+                    '<a class="post-card" href="' + p.slug + '/">' +
+                        '<h2></h2>' +
+                        '<span class="date"></span>' +
+                        '<span class="excerpt"></span>' +
+                        '<span class="read-more">Read more &rarr;</span>' +
+                    '</a>'
+                );
+            }).join('');
+
+            // Fill via textContent to avoid injecting post HTML into the listing.
+            const cards = container.querySelectorAll('.post-card');
+            posts.forEach(function (p, i) {
+                const card = cards[i];
+                card.querySelector('h2').textContent = p.title;
+                card.querySelector('.date').textContent = p.dateText;
+                card.querySelector('.excerpt').textContent = p.excerpt;
+            });
+        }
+
+        (async function () {
+            const results = await Promise.all(POSTS.map(function (slug) {
+                return loadPost(slug).catch(function (e) {
+                    console.error(e);
+                    return null;
+                });
+            }));
+
+            const posts = results
+                .filter(Boolean)
+                .sort(function (a, b) { return b.dateKey.localeCompare(a.dateKey); });
+
+            render(posts);
+        })();
+    </script>
+</body>
+</html>
